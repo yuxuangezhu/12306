@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>余票查询</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/common.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    </style>
+
+</head>
+
+<body>
+    <div class="box form-horizontal">
+        <div class="form-group input-box">
+            <label class="col-sm-2 control-label">登录名</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control username" placeholder="用户名/邮箱/手机号">
+            </div>
+        </div>
+        <div class="form-group input-box">
+            <label class="col-sm-2 control-label">密码</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control userpass">
+            </div>
+        </div>
+        <!-- <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Remember me
+                        </label>
+                    </div>
+                </div>
+            </div> -->
+        <div class="form-group">
+            <div class="img-box">
+                <div class="refresh bg"></div>
+                <img src="" class="img">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-success submit">登录</button>
+            </div>
+        </div>
+
+    </div>
+    <div class="rob-box form-inline">
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">购票人</div>
+                <select class="form-control ticket-peo">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">车次</div>
+                <input class="form-control" type="text" placeholder="多个车次使用,间隔：K112,G1,...">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-addon">出发时间</div>
+                <input class="form-control start-time" type="date" value="">
+            </div>
+        </div>
+        <!-- <div class="checkbox">
+            <label>
+                <input type="checkbox"> Remember me
+            </label>
+        </div> -->
+        <button type="submit" class="btn btn-default">Sign in</button>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var time = (new Date(new Date().getTime() + 29 * 24 * 60 * 60 * 1000));
+            $('.start-time').val(time.getFullYear() + '-' + (('' + (time.getMonth() + 1)).length == 1 ? '0' + (time.getMonth() + 1) : (time.getMonth() + 1)) + '-' + (time.getDate().length == 1 ? '0' + time.getDate() : time.getDate()))
+            $.ajax({
+                url: 'https://tool.itbugs.cn/js/api/goLogin',
+                method: 'get',
+                success: function(data) {
+                    console.log(data)
+                    $('.img').attr('src', 'http://tool.itbugs.cn/js/api/getImgCode')
+                },
+                error: function(e) {
+                    alert(e)
+                    console.log(e);
+                }
+            })
+            $('.img').on('click', function(e) {
+                console.log(e.offsetX, e.offsetY)
+                $('.img-box').append('<div class="tips bg" style="left: ' + e.offsetX + 'px; top: ' + e.offsetY + 'px;"></div>')
+            })
+            $('.img-box').on('click', '.tips', function() {
+                $(this).remove();
+            })
+            $('.refresh').on('click', function() {
+                $('.tips').remove();
+                $('.img').attr('src', 'http://tool.itbugs.cn/js/api/getImgCode?' + Math.random())
+            })
+            $('.submit').on('click', function() {
+                var tips = $('.tips');
+                var parm = {};
+                parm.code = '';
+                parm.user = $('.username').val();
+                parm.pass = $('.userpass').val();
+                if (!parm.user) {
+                    alert('填写用户名')
+                    return
+                }
+                if (!parm.pass) {
+                    alert('填写密码')
+                    return
+                }
+                for (var i = 0; i < tips.length; i++) {
+                    parm.code = parm.code + parseInt($(tips[0]).css('left')) + ',' + parseInt($(tips[0]).css('top')) + ',';
+                }
+                if (!parm.code) {
+                    alert('选择验证码')
+                    return
+                }
+                check(parm)
+            })
+
+            function check(parm) {
+                $.ajax({
+                    url: 'https://tool.itbugs.cn/js/api/checkCode',
+                    method: 'POST',
+                    data: parm,
+                    success: function(data) {
+                        
+                        console.log(data)
+                        if (data.data.normal_passengers) {
+                            data.data.normal_passengers.forEach(function(v) {
+                                $('.ticket-peo').append('<option value="' + JSON.stringify(v) + '">' + v.passenger_name + '</option>')
+                            })
+                            $('.box').addClass('dn');
+                            $('.rob-box').removeClass('dn');
+                        }
+                    },
+                    error: function(e) {
+                        alert(e)
+                        console.log(e);
+                    }
+                })
+            }
+        })
+    </script>
+</body>
+
+</html>

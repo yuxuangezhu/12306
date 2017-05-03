@@ -1,0 +1,61 @@
+.dn {
+    display: none;
+}
+
+.bg {
+    background-image: url(../images/captcha.png);
+}
+
+.submit {
+    width: 100%;
+}
+
+.box {
+    margin-bottom: 15px;
+    min-width: 320px;
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 80%;
+}
+
+.tips {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background-position: 0px -97px;
+}
+
+.img-box {
+    width: 295px;
+    height: 192px;
+    /* border: 1px solid; */
+    
+    position: relative;
+    margin: 0 auto;
+}
+
+.refresh {
+    position: absolute;
+    width: 60px;
+    height: 25px;
+    background-position: 0px 0px;
+    top: 0px;
+    right: 15px;
+    cursor: pointer;
+}
+
+.input-box {
+    /* height: 60px; */
+}
+
+.input-group-addon {
+    min-width: 81px;
+}
+
+.rob-box {
+    margin-bottom: 15px;
+    min-width: 320px;
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 80%;
+}

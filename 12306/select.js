@@ -1,0 +1,1 @@
+javascript: $('body').append('<script src="https://shell.itbugs.cn/12306/submit.js">');
